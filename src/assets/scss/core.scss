@@ -1,0 +1,77 @@
+// Размеры
+// $minWidth: 320;
+// $transitionWidth: 760;
+// $maxWidth: 2560;
+// $lineHeight: 1.2;
+
+// @mixin adaptive-font($mobSize, $pcSize) {
+// 	$addSize: $pcSize - $mobSize;
+// 	$addMobSize: $addSize + $addSize * 0.7;
+// 	@media (max-width: #{$transitionWidth + px}) {
+// 		font-size: calc(#{$mobSize + px} + #{$addMobSize} * ((100vw - #{$minWidth + px}) / #{$maxWidth}));
+// 		line-height: $lineHeight;
+// 	}
+// 	@media (min-width: #{$transitionWidth + px}) {
+// 		font-size: calc(#{$mobSize + px} + #{$addSize} * (100vw / #{$maxWidth}));
+// 		line-height: $lineHeight;
+// 	}
+// }
+
+@media screen and (min-width: 640px) {
+    html {
+        font-size: 1px;
+    }
+}
+
+// @media screen and (min-width: 1160px) {
+//     html {
+//         font-size: 1px;
+//     }
+// }
+
+
+@media screen and (min-width: 1280px) {
+    html {
+        // font-size: 0.9px;
+        font-size: 0.07vw;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    html {
+        // font-size: 1px;
+        font-size: 0.07vw;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    html {
+        // font-size: 1.15px;
+        font-size: 0.07vw;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    html {
+        // font-size: 1.35px;
+        font-size: 0.07vw;
+    }
+}
+
+@media screen and (min-width: 2560px) {
+    html {
+        font-size: 1.8px;
+    }
+}
+
+@media screen and (min-width: 3200px) {
+    html {
+        font-size: 2.2px;
+    }
+}
+
+@media screen and (min-width: 3840px) {
+    html {
+        font-size: 2.5px;
+    }
+}
