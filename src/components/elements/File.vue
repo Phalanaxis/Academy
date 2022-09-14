@@ -6,9 +6,9 @@
     </svg>
     <div class="file__box">
       <div class="file__name">
-        Теория
+        {{ text }}
       </div>
-      <a target="_blank" class="file__link">
+      <a :href="link + url" target="_blank" class="file__link">
         <svg class="file__arrow" width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="13.2485" cy="13.6082" r="12.7661" transform="rotate(90 13.2485 13.6082)" stroke="#93828D" stroke-width="0.964997"/>
           <path d="M13.2467 18.9263L16.1748 15.9982L15.5483 15.3853L13.6825 17.2511L13.6825 8.50769L12.8109 8.50769L12.8109 17.2511L10.9451 15.3853L10.3186 15.9982L13.2467 18.9263Z" fill="#93828D"/>
@@ -24,9 +24,11 @@
 <script>
 export default {
   setup () {
-    
+    const link = import.meta.env.VITE_UPLOADS_LINK
 
-    return {}
+    return {
+      link
+    }
   },
   props: {
     text: {
@@ -34,10 +36,6 @@ export default {
       default: 'Какой-то файл'
     },
     url: {
-      type: Object,
-      default: () => {}
-    },
-    link: {
       type: String,
       default: ''
     }
@@ -64,6 +62,7 @@ export default {
     bottom: 15px;
     display: flex;
     cursor: pointer;
+    text-decoration: none;
   }
   &__text {
     color: #93828D;

@@ -45,15 +45,6 @@ const router = createRouter({
           }
         },
         {
-          path: '/course',
-          name: 'course',
-          component: () => import('../views/course.vue'),
-          meta: {
-            requiresAuth: true,
-            title: ' - Ваши курсы'
-          }
-        },
-        {
           path: '/products',
           name: 'products',
           component: () => import('../views/products/index.vue'),
@@ -124,7 +115,35 @@ const router = createRouter({
             requiresAuth: true,
             title: ' - Статья'
           }
+        },
+        {
+          path: '/courses/',
+          name: 'courses',
+          component: () => import('../views/courses/index.vue'),
+          meta: {
+            requiresAuth: true,
+            title: ' - Ваши Курсы'
+          }
+        },
+        {
+          path: '/courses/webinar/:id',
+          name: 'ownedWebinar',
+          component: () => import('../views/courses/webinar.vue'),
+          meta: {
+            requiresAuth: true,
+            title: ' - Ваш вебинар'
+          }
+        },
+        {
+          path: '/courses/:id',
+          name: 'ownedCourse',
+          component: () => import('../views/courses/course.vue'),
+          meta: {
+            requiresAuth: true,
+            title: ' - Ваш курс'
+          }
         }
+
       ]
     },
     {
@@ -230,8 +249,31 @@ router.beforeEach((to, from, next) => {
       profile.fetchUserData()
     }
     next({ name: 'home' })
-  } 
+  }
   else {
+    next()
+  }
+})
+
+router.beforeResolve(async (to, from, next) => {
+  const profile = useProfileStore()
+  if (to.path === '/courses/webinar/' + to.params.id){
+    if (profile.courses === null) {
+      next({ name: 'home' })
+    } else if (profile.courses !== null && !profile.webinars.find(item => item.id === Number(atob(to.params.id.slice(to.params.id.lastIndexOf('-') + 1, to.params.id.length))))) {
+      next({ name: 'home' })
+    } else {
+      next()
+    }
+  } else if (to.path === '/courses/' + to.params.id) {
+    if (profile.courses === null) {
+      next({ name: 'home' })
+    } else if (profile.courses !== null && !profile.courses.find(item => item.id === Number(atob(to.params.id.slice(to.params.id.lastIndexOf('-') + 1, to.params.id.length))))) {
+      next({ name: 'home' })
+    } else {
+      next()
+    }
+  } else {
     next()
   }
 })

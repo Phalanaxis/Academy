@@ -8,11 +8,13 @@
   .spiral {
     fill: #E0DBDE;
     transition: fill .3s;
+    animation: rotate 2s infinite;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
     &:hover {
       cursor: pointer;
       fill: #644C5C;
-      animation: rotate 2s infinite;
-      animation-fill-mode: forwards;
+      animation-play-state: running;
     }
   }
   @keyframes rotate {

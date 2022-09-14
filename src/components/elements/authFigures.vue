@@ -1,6 +1,6 @@
 <template>
-  <oval class="authentification__figure-first" />
-  <snake class="authentification__figure-second" />
+  <snake class="authentification__figure-first" />
+  <oval class="authentification__figure-second" />
 </template>
 
 <script>
@@ -22,6 +22,7 @@ export default {
       top: 40px;
       left: -62px;
       cursor: pointer;
+      fill: #C99D7A;
       &:hover {
         animation: pulse;
         animation-duration: 1s;
@@ -31,6 +32,12 @@ export default {
         animation: click;
         animation-duration: 1s;
         animation-iteration-count: 1;
+      }
+      @media screen and (max-width: 680px) {
+        top: -40px;
+      }
+      @media screen and (max-width: 470px) {
+        display: none;
       }
     }
     &__figure-second {
@@ -48,6 +55,12 @@ export default {
         animation: click;
         animation-duration: 1s;
         animation-iteration-count: 1;
+      }
+      @media screen and (max-width: 680px) {
+        bottom: -60px;
+      }
+      @media screen and (max-width: 470px) {
+        display: none;
       }
     }
   }

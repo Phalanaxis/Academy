@@ -114,6 +114,9 @@ export default {
     &__input {
       width: 410px;
       margin: 0 0 20px 0;
+      @media screen and (max-width: 680px) {
+        width: 280px;
+      }
     }
     &__enter-button {
       margin: 50px 0 0 0;

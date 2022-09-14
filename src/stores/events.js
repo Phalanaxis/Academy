@@ -18,7 +18,7 @@ export const useEventsStore = defineStore('events', {
       this.foundEvent = this.events.find(item => item.id === Number(id))
     },
     async fetchEvents () {
-      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/events?populate=deep', {
+      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/events?populate=deep&sort=id:desc', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

@@ -33,7 +33,7 @@ export default {
     left: 0;
     height: 100%;
     width: 100%;
-    z-index: 3;
+    z-index: 11;
     &::after {
       content: '';
       position: absolute;
@@ -46,6 +46,10 @@ export default {
       right: 70px;
       display: block;
       cursor: pointer;
+      @media screen and (max-width: 680px) {
+        top: 30px;
+        right: 10px;
+      }
     }
     &::before {
       content: '';
@@ -59,6 +63,10 @@ export default {
       right: 70px;
       display: block;
       cursor: pointer;
+      @media screen and (max-width: 680px) {
+        top: 30px;
+        right: 10px;
+      }
     }
 
     &__block {
@@ -69,6 +77,13 @@ export default {
       background-color: #F4EBE4;
       border-radius: 30px;
       padding: 40px 110px;
+      @media screen and (max-width: 1280px) {
+        padding: 30px 60px;
+      }
+      @media screen and (max-width: 680px) {
+        max-height: 80%;
+        padding: 30px 10px;
+      }
     }
   }
 </style>

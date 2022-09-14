@@ -68,18 +68,28 @@ export default {
   .event {
     width: 100%;
     min-height: 100vh;
-    background-color: #FBFAF9;
-    padding: 190px 20% 140rem 110rem;
+    padding: 190rem 20% 140rem 110rem;
     &__preview {
       display: flex;
       border: 1px #C5B1B2 solid;
       border-radius: 15px;
       min-height: 300rem;
+      @media screen and (max-width: 680px) {
+        flex-direction: column;
+      }
     }
     &__image {
       width: calc(100% - 360rem);
       object-fit: cover;
       border-radius: 0 15px 15px 0;
+      @media screen and (max-width: 1280px) {
+        width: 250px;
+      }
+      @media screen and (max-width: 680px) {
+        width: 100%;
+        height: 240px;
+        border-radius: 0 0 14px 14px;
+      }
     }
     &__info-box {
       display: flex;
@@ -87,6 +97,12 @@ export default {
       justify-content: space-between;
       width: 360rem;
       margin: 30rem 20rem 30rem 30rem;
+      @media screen and (max-width:1280px) {
+        width: calc(100% - 250px);
+      }
+      @media screen and (max-width: 680px) {
+        width: 100%;
+      }
 
     }
     &__title {

@@ -76,26 +76,49 @@ export default {
     width: 100%;
     height: 17vw;
     position: relative;
+    transition: box-shadow .3s;
+    &:hover {
+      box-shadow: 1px 1px 10px 1px rgb(12 12 12 / 20%);
+    }
+    @media screen and (max-width: 1280px) {
+      height: 250px;
+    }
+    @media screen and (max-width: 680px) {
+      height: 450px;
+    }
     &__link {
       text-decoration: none;
       display: flex;
       height: 100%;
+      @media screen and (max-width: 680px) {
+        flex-direction: column;
+      }
     }
     &__image-container {
       position: relative;
       width: 45%;
       height: 100%;
       object-fit: cover;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+        height: 200px;
+      }
     }
     &__image {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 20px 0px 0 20px;
+      @media screen and (max-width: 680px) {
+        border-radius: 20px 20px 0 0;
+      }
     }
     &__card-info {
       width: 55%;
       padding: 20rem 20rem 20rem 30rem;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+      }
     }
     &__card-title {
       font-size: 14rem;

@@ -26,7 +26,10 @@ export default {
     &__form-switcher {
       display: flex;
       justify-content: center;
-      margin: 0 0 40px 0;
+      margin: 0 0 40rem 0;
+      @media screen and (max-width: 470px) {
+        margin: 0 0 100px 0;
+      }
     }
     &__form-radio {
       text-decoration: none;
@@ -37,6 +40,9 @@ export default {
       backface-visibility: hidden;
       transform-origin: center;
       transition: transform .2s;
+      @media screen and (max-width: 680px) {
+        font-size: 14px;
+      }
       &:hover {
         transform: scale(1.1);
       }

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useWebinarsStore = defineStore('webinars', {
   state: () => ({
     webinars: [],
-    foundWebinar: ''
+    foundWebinar: null
   }),
   getters: {
     GET_WEBINARS: (state) => {
@@ -15,7 +15,7 @@ export const useWebinarsStore = defineStore('webinars', {
   },
   actions: {
     async fetchWebinars () {
-      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/webinars?populate=deep', {
+      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/webinars?populate=deep&sort=id:desc', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -26,6 +26,25 @@ export const useWebinarsStore = defineStore('webinars', {
         this.webinars = data.data
       })
       return true
+    },
+    async fetchOneWebinar (id) {
+      let result = false
+      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/webinars/' + id + '?populate=deep', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((response) => {
+        if (response.status === 200) {
+          result = true
+          return response.json()
+        }
+      }).then((data) => {
+        if (data !== undefined) {
+          this.foundWebinar = data.data
+        }
+      })
+      return result
     },
     searchWebinar (id) {
       this.foundWebinar = this.webinars.find(item => item.id === Number(id))

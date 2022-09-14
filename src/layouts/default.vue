@@ -1,26 +1,20 @@
 <template>
   <div class="default">
-    <the-side-menu :navigations="navigations" />
-    <div class="default__container">
-      <the-top-bar />
-      <router-view/>
-    </div>
+    <user-interface :navigations="navigations" />
   </div>
 </template>
 
 <script>
-  import TheSideMenu from '@/components/TheSideMenu.vue'
-  import TheTopBar from '@/components/TheTopBar.vue'
+  import UserInterface from '@/components/UserInterface.vue'
   export default {
     components: {
-      TheSideMenu,
-      TheTopBar
+      UserInterface
     },
     data () {
       return {
         navigations: [
           {
-            path: '',
+            path: '/courses',
             title: 'Ваши курсы',
             color: '#77343D',
             svg: '<svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.4742 9.5409C1.36876 10.9346 -0.0197049 13.2888 0.000211478 15.4379C0.0172827 17.4843 1.25495 19.4338 3.34901 20.7078C4.57814 21.4545 6.08039 22.0787 9.81329 23.3926C16.8722 25.8779 19.4557 26.8983 21.3449 27.9529C22.5768 28.6397 24.1189 29.7256 24.9412 30.4866C25.6667 31.1564 25.7578 31.165 25.6582 30.5465C25.1489 27.4313 25.8602 23.0905 28.0823 15.7314C29.8179 9.98552 30.1991 7.83366 29.9146 5.35973C29.8008 4.36788 29.2261 2.71765 28.7794 2.09917C27.8035 0.751046 25.7862 -0.0669482 23.6153 0.00430544C22.059 0.0556081 21.1116 0.320673 19.5439 1.14152C16.3829 2.79745 14.707 5.60199 14.8322 9.03072C14.8521 9.5637 14.8436 10.0083 14.818 10.0226C14.7895 10.0368 14.3485 9.76606 13.8364 9.42404C12.1407 8.28683 10.5388 7.79661 8.67236 7.84506C6.85428 7.89067 5.11019 8.4607 3.4742 9.5466" fill="#77343D"/></svg>'
@@ -59,12 +53,5 @@
   .default {
     overflow: hidden;
     display: flex;
-    &__container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow-y: scroll;
-      background-color: #FBFAF9;
-    }
   }
 </style>

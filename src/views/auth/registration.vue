@@ -25,6 +25,7 @@
 <script>
 import { ref } from 'vue'
 import { useMessage } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import { useProfileStore } from '@/stores/profile'
 import modalSlot from '@/components/ui/modalSlot.vue'
 import RoundButton from '@/components/ui/RoundButton.vue'
@@ -40,6 +41,7 @@ export default {
   setup() {
     const profile = useProfileStore()
     const message = useMessage()
+    const router = useRouter()
     const formValue = ref({
       login: {
         value: '',
@@ -97,6 +99,7 @@ export default {
         profile.registerProfile(data).then((result) => {
           if(result === 'success') {
             message.error('Пользователь успешно зарегестрирован')
+            router.push('/')
           } else {
             message.success('Что-то пошло не так, возможно такой пользователь уже существует')
           }
@@ -181,10 +184,21 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    @media screen and (max-width: 680px) {
+      margin: 60px 0 0 0;
+    }
+    @media screen and (max-width: 470px) {
+      height: auto;
+      margin: 0;
+    }
     &__fields-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 20px;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+        grid-template-columns: 1fr;
+      }
     }
     &__slot {
       height: 470px;
@@ -192,13 +206,33 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+      @media screen and (max-width: 680px) {
+        height: auto;
+        padding: 60px 20px;
+        width: calc(100% - 50px);
+      }
+      @media screen and (max-width: 470px) {
+        height: 100%;
+        width: 100vw;
+        padding: 60px 20px 20px 20px;
+      }
     }
     &__input {
       width: 410px;
+      @media screen and (max-width: 1280px) {
+        width: 310px;
+      }
+      @media screen and (max-width: 680px) {
+        width: 100%;
+      }
     }
     &__enter-button {
       width: 410px;
       margin: 40px 0 0 0;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+        margin: 40px 0;
+      }
     }
   }
 </style>

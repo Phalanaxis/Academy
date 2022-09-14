@@ -1,14 +1,16 @@
 <template>
-  <container-slot class="cart-item">
+  <container-slot :class="{'cart-item': true, 'cart-item_disabled': disabled}">
     <div
       class="cart-item__cross"
-      @click="$emit('deleteFromCart', id)"
+      @click="$emit('deleteFromCart', id, type)"
     />
     <router-link
-      class="cart-item__link"
-      :to="'/products/' + linkTransform(title, id)"
+      :class="{'cart-item__link': true, 'cart-item__link_disabled': disabled}"
+      :to="innerLink + linkTransform(title, id)"
     >
-      <img class="cart-item__image" :src="link + image" />
+      <div class="cart-item__image-container">
+        <img v-if="image.data !== null" class="cart-item__image" :src="link + image.data.attributes.url" />
+      </div>
       <div class="cart-item__content">
         <div class="cart-item__title" v-html="title" />
         <div class="cart-item__program" v-html="label" />
@@ -19,6 +21,7 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
 import linkTransform from '@/components/mixins/linkTransform'
 import ContainerSlot from '@/components/ui/ContainerSlot.vue'
 export default {
@@ -45,14 +48,32 @@ export default {
       default: ''
     },
     image: {
+      type: Object,
+      default: () => {}
+    },
+    type: {
       type: String,
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
-  setup () {
+  setup ({ type }) {
     const link = import.meta.env.VITE_UPLOADS_LINK
+    const innerLink = ref('')
+
+    onMounted(() => {
+      if (type === 'webinar') {
+        innerLink.value = '/webinars/'
+      } else {
+        innerLink.value = '/products/'
+      }
+    })
     return {
-      link
+      link,
+      innerLink
     }
   }
 }
@@ -63,18 +84,37 @@ export default {
     position: relative;
     height: 150rem;
     margin: 0 0 30px 0;
-    transition: transform .3s, box-shadow .3s;
+    transition: box-shadow .3s;
+    @media screen and (max-width: 1280px) {
+      height: 150px;
+    }
+    @media screen and (max-width: 680px) {
+      height: 300px;
+    }
     &:hover {
-      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-      transform: scale(1.01);
+      box-shadow: 1px 1px 10px 1px rgb(12 12 12 / 20%);
+    }
+    &_disabled {
+      opacity: 0.5;
+      &:hover {
+        box-shadow: none;
+      }
     }
     &__link {
       text-decoration: none;
       display: flex;
       flex-direction: row;
       height: 100%;
+      @media screen and (max-width: 680px) {
+        flex-direction: column;
+      }
+      &_disabled {
+        user-select: none;
+        pointer-events: none;
+      }
     }
     &__content {
+      height: 100%;
       padding: 20rem 40rem 15rem 30rem;
       display: flex;
       flex-direction: column;
@@ -119,11 +159,41 @@ export default {
         background-color: #644C5C;
         transform: rotate(-45deg)
       }
+      @media screen and (max-width: 680px) {
+        &::after {
+          background-color: #FFF;
+        }
+        &::before {
+          background-color: #FFF;
+        }
+      }
+    }
+    &__image-container {
+      width: 190rem;
+      min-width: 190rem;
+      height: 100%;
+      border-radius: 20px 0 0 20px;
+      background-image: url(../../assets/images/default.png);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+        min-height: 150px;
+        height: 150px;
+        border-radius: 20px 20px 0 0;
+      }
     }
     &__image {
-      width: 190rem;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border-radius: 20px 0 0 20px;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+        height: 150px;
+        border-radius: 20px 20px 0 0;
+      }
     }
     &__title {
       font-weight: 600;
@@ -148,6 +218,12 @@ export default {
       font-size: 14rem;
       line-height: 20rem;
       border-radius: 20rem;
+      @media screen and (max-width: 680px) {
+        bottom: unset;
+        right: unset;
+        top: 100px;
+        left: 15px;
+      }
     }
   }
 </style>

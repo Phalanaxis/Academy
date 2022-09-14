@@ -25,5 +25,11 @@ export default {
     flex-direction: column;
     position: relative;
     padding: 40px 110px;
+    @media screen and (max-width: 680px) {
+      padding: 60px 20px;
+    }
+    @media screen and (max-width: 470px) {
+      border-radius: 0;
+    }
   }
 </style>

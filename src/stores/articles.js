@@ -18,7 +18,7 @@ export const useArticlesStore = defineStore('articles', {
       this.foundArticle = this.articles.find(item => item.id === Number(id))
     },
     async fetchArticles () {
-      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/articles?populate=deep', {
+      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/articles?populate=deep&sort=id:desc', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

@@ -4,7 +4,7 @@ export const useProductsStore = defineStore('products', {
   state: () => ({
     products: [],
     inCart: [],
-    foundProduct: ''
+    foundProduct: null
   }),
   getters: {
     GET_PRODUCTS: (state) => {
@@ -16,7 +16,7 @@ export const useProductsStore = defineStore('products', {
   },
   actions: {
     async fetchProducts () {
-      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/products?populate=deep', {
+      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/products?populate=deep&sort=id:desc', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -27,6 +27,25 @@ export const useProductsStore = defineStore('products', {
         this.products = data.data
       })
       return true
+    },
+    async fetchOneProduct (id) {
+      let result = false
+      await fetch(import.meta.env.VITE_SERVER_ROUTE + '/products/' + id + '?populate=deep', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((response) => {
+        if (response.status === 200) {
+          result = true
+          return response.json()
+        }
+      }).then((data) => {
+        if (data !== undefined) {
+          this.foundProduct = data.data
+        }
+      })
+      return result
     },
     searchProduct (id) {
       this.foundProduct = this.products.find(item => item.id === Number(id))

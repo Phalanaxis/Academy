@@ -39,7 +39,13 @@ h5 {
   letter-spacing: -0.5px;  
 }
 section {
-  padding: 0 75px 0 30px;
+  padding: 60rem 75rem 50rem 30rem;
+  @media screen and (max-width: 1280px) {
+    padding: 40px 60px 50px 60px;
+  }
+  @media screen and (max-width: 680px) {
+    padding: 45px 25px;
+  }
 }
 *:focus {
   outline-width: 0;

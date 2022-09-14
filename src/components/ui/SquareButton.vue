@@ -29,7 +29,6 @@ export default {
     --n-font-size: 16rem!important;
     --n-border-radius: 10px!important;
     letter-spacing: 0.03ch;
-    width: 300rem!important;
   }
   .n-button.n-button--disabled {
     cursor: auto!important;

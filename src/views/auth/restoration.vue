@@ -85,6 +85,16 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+      @media screen and (max-width: 680px) {
+        height: auto;
+        padding: 40px 20px;
+        width: calc(100% - 50px);
+      }
+      @media screen and (max-width: 470px) {
+        padding: 60px 20px;
+        height: 100%;
+        width: 100vw;
+      }
     }
     &__success {
       font-size: 24px;
@@ -106,6 +116,9 @@ export default {
     &__input {
       width: 410px;
       margin: 0 0 20px 0;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+      }
     }
     &__description {
       color: #78353E;
@@ -113,12 +126,18 @@ export default {
     &__enter-button {
       width: 410px;
       margin: 120px 0 0 0;
+      @media screen and (max-width: 680px) {
+        width: 100%;
+      }
     }
     &__authentification-link-block {
       display: flex;
       justify-content: center;
       color: #78353E;
       margin: 20px 0 0 0;
+      @media screen and (max-width: 680px) {
+        margin: 20px 0;
+      }
     }
     &__authentification-link {
       margin: 0 0 0 5px;

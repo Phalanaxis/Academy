@@ -1,42 +1,44 @@
 <template>
-  <div class="product">
+  <section v-if="webinars.GET_FOUNDWEBINAR" class="webinar">
     <div
       v-if="webinars.GET_FOUNDWEBINAR.attributes"
-      class="product__preview"
+      class="webinar__preview"
     >
-      <img
-        v-if="webinars.GET_FOUNDWEBINAR.attributes.image.data"
-        class="product__image" :src="link + webinars.GET_FOUNDWEBINAR.attributes.image.data.attributes.url"
-      />
-      <div class="product__info-box">
-        <h3 class="product__title" v-html="webinars.GET_FOUNDWEBINAR.attributes.title" />
-        <div class="product__cost-container">
-          <div class="product__cost-box">
-            <div class="product__cost-numbers">
+      <div class="webinar__image-container">
+        <img
+          v-if="webinars.GET_FOUNDWEBINAR.attributes.image.data"
+          class="webinar__image" :src="link + webinars.GET_FOUNDWEBINAR.attributes.image.data.attributes.url"
+        />
+      </div>
+      <div class="webinar__info-box">
+        <h3 class="webinar__title" v-html="webinars.GET_FOUNDWEBINAR.attributes.title" />
+        <div class="webinar__cost-container">
+          <div class="webinar__cost-box">
+            <div class="webinar__cost-numbers">
               <div
                 v-if="webinars.GET_FOUNDWEBINAR.attributes.discount && webinars.GET_FOUNDWEBINAR.attributes.cost"
-                class="product__cost"
+                class="webinar__cost"
                 v-html=" Math.round((webinars.GET_FOUNDWEBINAR.attributes.cost)/100 * (100 - webinars.GET_FOUNDWEBINAR.attributes.discount))"
               />
               <div
                 v-if="webinars.GET_FOUNDWEBINAR.attributes.cost"
-                :class="{'product__cost': true, 'product__cost_with-discount': webinars.GET_FOUNDWEBINAR.attributes.discount}" 
+                :class="{'webinar__cost': true, 'webinar__cost_with-discount': webinars.GET_FOUNDWEBINAR.attributes.discount}" 
                 v-html="webinars.GET_FOUNDWEBINAR.attributes.cost + '&#8381;'"
               />
               <div 
                 v-else
-                class="product__discount"
+                class="webinar__discount"
                 v-html="'Бесплатно'"
               />
             </div>
             <div
               v-if="webinars.GET_FOUNDWEBINAR.attributes.discount"
-              class="product__discount"
+              class="webinar__discount"
               v-html="webinars.GET_FOUNDWEBINAR.attributes.discount + '%'"
             />
           </div>
           <square-button
-            class="product__cart-button"
+            class="webinar__cart-button"
             :buttonPlaceholder="buttonPlaceholder"
             @click="addToCart()"
             :disabled="disabled"
@@ -44,8 +46,40 @@
         </div>
       </div>
     </div>
-    <div v-if="webinars.GET_FOUNDWEBINAR.attributes" class="product__description" v-html="webinars.GET_FOUNDWEBINAR.attributes.cardDescription" />
-  </div>
+    <div v-if="webinars.GET_FOUNDWEBINAR.attributes" class="webinar__description" v-html="webinars.GET_FOUNDWEBINAR.attributes.description" />
+    <div class="webinar__cost-container-mobile">
+      <div class="webinar__cost-box">
+        <div class="webinar__cost-numbers">
+          <div
+            v-if="webinars.GET_FOUNDWEBINAR.attributes.discount && webinars.GET_FOUNDWEBINAR.attributes.cost"
+            class="webinar__cost"
+            v-html=" Math.round((webinars.GET_FOUNDWEBINAR.attributes.cost)/100 * (100 - webinars.GET_FOUNDWEBINAR.attributes.discount))"
+          />
+          <div
+            v-if="webinars.GET_FOUNDWEBINAR.attributes.cost"
+            :class="{'webinar__cost': true, 'webinar__cost_with-discount': webinars.GET_FOUNDWEBINAR.attributes.discount}" 
+            v-html="webinars.GET_FOUNDWEBINAR.attributes.cost + '&#8381;'"
+          />
+          <div 
+            v-else
+            class="webinar__discount"
+            v-html="'Бесплатно'"
+          />
+        </div>
+        <div
+          v-if="webinars.GET_FOUNDWEBINAR.attributes.discount"
+          class="webinar__discount"
+          v-html="webinars.GET_FOUNDWEBINAR.attributes.discount + '%'"
+        />
+      </div>
+      <square-button
+        class="webinar__cart-button"
+        :buttonPlaceholder="buttonPlaceholder"
+        @click="addToCart()"
+        :disabled="disabled"
+      />
+    </div>
+  </section>
 </template>
 
 <script>
@@ -53,6 +87,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useWebinarsStore } from '@/stores/webinars'
 import { useProductsStore } from '@/stores/products'
+import { useProfileStore } from '@/stores/profile'
 import SquareButton from '@/components/ui/SquareButton.vue'
 export default {
   components: {
@@ -61,18 +96,12 @@ export default {
   setup () {
     const webinars = useWebinarsStore()
     const products = useProductsStore()
+    const profile = useProfileStore()
     const route = useRoute()
     const buttonPlaceholder = ref('В корзину')
     const disabled = ref(false)
     const link = import.meta.env.VITE_UPLOADS_LINK
-    webinars.fetchWebinars().then((result) => {
-      if (result === true) {
-        webinars.searchWebinar(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length)))
-        if (!webinars.GET_FOUNDWEBINAR.attributes.cost) {
-          buttonPlaceholder.value = 'Добавить'
-        }
-      }
-    })
+
     function checkCart () {
       if (localStorage.getItem('inCart')) {
         return JSON.parse(localStorage.getItem('inCart'))
@@ -86,9 +115,11 @@ export default {
     }
     function addToCart () {
       if (webinars.GET_FOUNDWEBINAR.attributes.cost) {
-        console.log('iwork')
         let tempCost
-        let tempImage = webinars.GET_FOUNDWEBINAR.attributes.image.data.attributes.url
+        let tempImage = null
+        if (webinars.GET_FOUNDWEBINAR.attributes.image.data !== null) {
+          tempImage = webinars.GET_FOUNDWEBINAR.attributes.image.data.attributes.url
+        }
         if (webinars.GET_FOUNDWEBINAR.attributes.discount !== null) {
           tempCost =  Math.round((webinars.GET_FOUNDWEBINAR.attributes.cost)/100 * (100 - webinars.GET_FOUNDWEBINAR.attributes.discount))
         } else {
@@ -105,18 +136,38 @@ export default {
           cost: tempCost 
         }
         products.inCart.push(tempData)
-        buttonPlaceholder.value = 'Уже добавлено в корзину'
         disabled.value = true
+        buttonPlaceholder.value = 'Уже добавлено в корзину'
         saveToCart(products.inCart)
+      } else {
+        profile.installWebinar(webinars.GET_FOUNDWEBINAR.id).then((result) => {
+          if (result) {
+            disabled.value = true
+            buttonPlaceholder.value = 'Уже приобретено'
+          }
+        })
       }
     }
     onMounted(() => {
-      products.inCart = checkCart()
-      if (products.inCart.filter(item => item.type === 'webinar').find(item => item.id === Number(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length))))) {
-        buttonPlaceholder.value = 'Уже добавлено в корзину'
-        disabled.value = true
-      }
+      webinars.fetchWebinars().then((result) => {
+        if (result === true) {
+          webinars.searchWebinar(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length)))
+          if (!webinars.GET_FOUNDWEBINAR.attributes.cost) {
+            buttonPlaceholder.value = 'Добавить'
+          }
+          products.inCart = checkCart()
+          if (products.inCart.filter(item => item.type === 'webinar').find(item => item.id === Number(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length))))) {
+            disabled.value = true
+            buttonPlaceholder.value = 'Уже добавлено в корзину'
+          }
+          if (profile.webinars.find(item => item.id === Number(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length))))) {
+            disabled.value = true
+            buttonPlaceholder.value = 'Уже приобретено'
+          }
+        }
+      })
     })
+
     return {
       webinars,
       products,
@@ -130,19 +181,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .product {
+  .webinar {
     width: 100%;
-    max-height: 100vh;
-    background-color: #FBFAF9;
-    padding: 190px 75rem 140rem 110rem;
-    height: 100vh;
-    overflow-y: scroll;
+    min-height: 100vh;
+    padding: 190rem 75rem 140rem 110rem;
+    @media screen and (max-width: 1280px) {
+      padding: 70px 60px;
+    }
     &__preview {
       display: flex;
+      @media screen and (max-width: 1280px) {
+        flex-direction: column-reverse;
+      }
     }
-    &__image {
+    &__image-container {
       width: calc(100% - 330rem);
       height: 360rem;
+      object-fit: cover;
+      background-color: rgb(243, 240, 236);
+      background-image: url(../../assets/images/default.png);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      border-radius: 15px;
+      @media screen and (max-width: 1280px) {
+        width: 100%;
+      }
+      @media screen and (max-width: 680px) {
+        height: 200px;
+      }
+    }
+    &__image {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border-radius: 15px;
     }
@@ -152,7 +223,10 @@ export default {
       justify-content: space-between;
       width: 300rem;
       margin: 0 0 0 30px;
-
+      @media screen and (max-width: 1280px) {
+        margin: 0 0 40px 0;
+        width: 100%;
+      }
     }
     &__title {
       font-weight: 600;
@@ -173,6 +247,17 @@ export default {
       align-items: center;
       justify-content: space-between;
     }
+    &__cost-container {
+      @media screen and (max-width: 1280px) {
+        display: none;
+      }
+      &-mobile {
+        margin: 40px 0 0 0;
+        @media screen and (min-width: 1281px) {
+          display: none;
+        }
+      }
+    }
     &__cost-numbers {
       display: flex;
       align-items: center;
@@ -180,6 +265,9 @@ export default {
     &__cart-button {
       width: 300rem;
       height: 50rem;
+      @media screen and (max-width: 1280px) {
+        width: 100%;
+      }
     }
     &__cost {
       font-weight: 600;
@@ -197,21 +285,25 @@ export default {
     }
     &__discount {
       font-weight: 500;
-      font-size: 14px;
-      line-height: 22px;
+      font-size: 14rem;
+      line-height: 22rem;
       color: #FFF;
-      padding: 5px 15px;
+      padding: 5rem 15rem;
       background-color: #644C5C;
-      border-radius: 16px;
+      border-radius: 16rem;
     }
     &__select:deep(.n-base-selection) {
-      margin: 0 0 15px 0;
+      margin: 0 0 15rem 0;
     }
     &__description {
       max-width: calc(100% - 330rem );
-      margin: 40px 0 0 0;
+      margin: 40rem 0 0 0;
       font-size: 14rem;
-      word-break: break-word;
+      overflow: hidden;
+      @media screen and (max-width: 1280px) {
+        margin: 25rem 0 0 0;
+        max-width: 100%;
+      }
     }
   }
 </style>

@@ -1,17 +1,23 @@
 <template>
-  <div class="articles">
-    <h2 class="articles__title">Статьи</h2>
-    <articles-list :list="articles.GET_ARTICLES" />
-  </div>
+  <section class="articles">
+    <ui-title>Статьи</ui-title>
+    <tagged-cards-list :list="articles.GET_ARTICLES" mainLink="/articles/" />
+  </section>
 </template>
 
 <script>
 import { onMounted } from 'vue'
 import { useArticlesStore } from '@/stores/articles'
-import ArticlesList from '@/components/blocks/ArticlesList.vue'
+import TaggedCardsList from '@/components/blocks/TaggedCardsList.vue'
+import UiTitle from '@/components/ui/UiTitle.vue'
 export default {
   components: {
-    ArticlesList
+    TaggedCardsList,
+    UiTitle
+  },
+  provide: {
+    isTagged: true,
+    isPriced: false,
   },
   setup () {
     const articles = useArticlesStore()
@@ -30,14 +36,5 @@ export default {
   .articles {
     width: 100%;
     min-height: 100vh;
-    padding: 60rem 75rem 50rem 30rem;
-    background-color: #FBFAF9;
-    &__title {
-      margin: 0;
-      font-size: 40rem;
-      line-height: 60rem;
-      font-weight: 600;
-      color: #644C5C;
-    }
   }
 </style>

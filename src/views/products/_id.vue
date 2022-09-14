@@ -1,5 +1,5 @@
 <template>
-  <div class="product">
+  <div v-if="products.GET_FOUNDPRODUCT" class="product">
     <div v-if="products.GET_FOUNDPRODUCT.attributes" class="product__preview">
       <img v-if="products.GET_FOUNDPRODUCT.attributes.image.data !== null" class="product__image" :src="link + products.GET_FOUNDPRODUCT.attributes.image.data.attributes.url" />
       <div class="product__info-box">
@@ -35,8 +35,35 @@
         </div>
       </div>
     </div>
-    <div v-if="products.GET_FOUNDPRODUCT.attributes" class="product__description">
-      {{ products.GET_FOUNDPRODUCT.attributes.cardDescription }}
+    <div v-if="products.GET_FOUNDPRODUCT.attributes" class="product__description" v-html="products.GET_FOUNDPRODUCT.attributes.description" />
+    <div class="product__cost-container-mobile">
+      <div  v-if="selectCourseValue" class="product__cost-box">
+        <div class="product__cost-numbers">
+          <div class="product__cost" v-if="selectCourseValue.discount !== null" v-html=" Math.round((selectCourseValue.cost)/100 * (100 - selectCourseValue.discount))" />
+          <div :class="{'product__cost': true, 'product__cost_with-discount': selectCourseValue.discount !== null}" v-html="selectCourseValue.cost + '&#8381;'" />
+        </div>
+        <div v-if="selectCourseValue.discount !== null" class="product__discount" v-html="selectCourseValue.discount + '%'" />
+      </div>
+      <n-select
+        v-if="products.GET_FOUNDPRODUCT.attributes.courseProgram.length"
+        class="product__select"
+        :default-value="products.GET_FOUNDPRODUCT.attributes.courseProgram[0].label"
+        v-model:value="selectCourseValue.value"
+        :options="courseOptions"
+        :on-update:value="setProgram"
+      />
+      <n-select
+        v-else
+        class="product__select"
+        default-value="Полный курс"
+        disabled
+      />
+      <square-button
+        class="product__cart-button"
+        :buttonPlaceholder="buttonPlaceholder"
+        @click="addToCart(selectCourseValue)"
+        :disabled="disabled"
+      />
     </div>
   </div>
 </template>
@@ -44,6 +71,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useProfileStore } from '@/stores/profile'
 import { useProductsStore } from '@/stores/products'
 import SquareButton from '@/components/ui/SquareButton.vue'
 export default {
@@ -52,6 +80,7 @@ export default {
   },
   setup () {
     const products = useProductsStore()
+    const profile = useProfileStore()
     const route = useRoute()
     const buttonPlaceholder = ref('В корзину')
     const disabled = ref(false)
@@ -95,9 +124,11 @@ export default {
       }
       const tempData = {
         id: products.GET_FOUNDPRODUCT.id,
-        cardDescription: products.GET_FOUNDPRODUCT.attributes.cardDescription,
+        type: 'course',
+        cardDescription: products.GET_FOUNDPRODUCT.attributes.description,
         category: products.GET_FOUNDPRODUCT.attributes.category,
         title: products.GET_FOUNDPRODUCT.attributes.title,
+        labelId: selectCourseValue.value.id,
         label: selectCourseValue.value.label,
         image: tempImage,
         cost: tempCost 
@@ -112,8 +143,11 @@ export default {
     }
     onMounted(() => {
       products.inCart = checkCart()
-      if (products.inCart.filter(item => item.id === Number(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length)))).length > 0) {
+      if (products.inCart.filter(item => item.type === 'course').filter(item => item.id === Number(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length)))).length > 0) {
         buttonPlaceholder.value = 'Уже добавлено в корзину'
+        disabled.value = true
+      } else if (profile.courses.find(item => item.id === Number(atob(route.params.id.slice(route.params.id.lastIndexOf('-') + 1, route.params.id.length))))) {
+        buttonPlaceholder.value = 'Уже приобретено'
         disabled.value = true
       }
     })
@@ -134,19 +168,27 @@ export default {
 <style lang="scss" scoped>
   .product {
     width: 100%;
-    max-height: 100vh;
-    background-color: #FBFAF9;
-    padding: 190px 75rem 140rem 110rem;
-    height: 100vh;
-    overflow-y: scroll;
+    padding: 190rem 75rem 140rem 110rem;
+    @media screen and (max-width: 1280px) {
+      padding: 70px 60px;
+    }
     &__preview {
       display: flex;
+      @media screen and (max-width: 1280px) {
+        flex-direction: column-reverse;
+      }
     }
     &__image {
       width: calc(100% - 330rem);
       height: 360rem;
       object-fit: cover;
       border-radius: 15px;
+      @media screen and (max-width: 1280px) {
+        width: 100%;
+      }
+      @media screen and (max-width: 680px) {
+        height: 200px;
+      }
     }
     &__info-box {
       display: flex;
@@ -154,7 +196,10 @@ export default {
       justify-content: space-between;
       width: 300rem;
       margin: 0 0 0 30px;
-
+      @media screen and (max-width: 1280px) {
+        margin: 0 0 40px 0;
+        width: 100%;
+      }
     }
     &__title {
       font-weight: 600;
@@ -175,6 +220,17 @@ export default {
       align-items: center;
       justify-content: space-between;
     }
+    &__cost-container {
+      @media screen and (max-width: 1280px) {
+        display: none;
+      }
+      &-mobile {
+        margin: 40px 0 0 0;
+        @media screen and (min-width: 1281px) {
+          display: none;
+        }
+      }
+    }
     &__cost-numbers {
       display: flex;
       align-items: center;
@@ -182,6 +238,9 @@ export default {
     &__cart-button {
       width: 300rem;
       height: 50rem;
+      @media screen and (max-width: 1280px) {
+        width: 100%;
+      }
     }
     &__cost {
       font-weight: 600;
@@ -214,6 +273,10 @@ export default {
       margin: 40px 0 0 0;
       font-size: 14rem;
       word-break: break-word;
+      @media screen and (max-width: 1280px) {
+        margin: 25px 0 0 0;
+        max-width: 100%;
+      }
     }
   }
 </style>

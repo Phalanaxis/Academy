@@ -3,8 +3,6 @@
     <modal-slot class="authentification__slot">
       <auth-figures />
       <auth-switch />
-      <div @click="test()">
-      </div>
       <n-input class="authentification__input" type="text" round clearable placeholder="Логин" v-model:value="formValue.login.value" :status="formValue.login.isValid" />
       <n-input class="authentification__input" type="password" clearable round placeholder="Пароль" v-model:value="formValue.password.value" :status="formValue.password.isValid" />
       <div class="authentification__additional-buttons">
@@ -85,7 +83,7 @@ export default {
           login: formValue.value.login.value,
           password: formValue.value.password.value
         }
-        profile.loginUser(data, rememberMe)
+        profile.loginUser(data, rememberMe.value)
         .then((result) => {
           if (result === 'success') {
             router.push('/')
@@ -120,20 +118,35 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    @media screen and (max-width: 680px) {
+      overflow-x: hidden;
+    }
+    @media screen and (max-width: 470px) {
+      height: 100%;
+    }
     &__slot {
       height: 470px;
       width: 630px;
+      @media screen and (max-width: 680px) {
+        height: auto;
+        width: calc(100% - 50px);
+      }
+      @media screen and (max-width: 470px) {
+        width: 100%;
+        height: 100%;
+      }
     }
     &__input {
-      width: 410px;
       margin: 0 0 20px 0;
-      &:deep(.n-input__input-el) {
-        // стили
-      }
     }
     &__additional-buttons {
       display: flex;
       justify-content: space-between;
+    }
+    &__checkbox {
+      @media screen and (max-width: 680px) {
+        --n-font-size: 12px!important;
+      }
     }
     &__restore-button {
       text-decoration: none;
@@ -151,6 +164,10 @@ export default {
       margin: 40px 0 0 0;
       display: flex;
       justify-content: center;
+      @media screen and (max-width: 680px) {
+        text-align: center;
+        margin: 20px 0 0 0;
+      }
     }
     &__social-networks {
       display: flex;

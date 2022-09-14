@@ -69,7 +69,6 @@ export default {
       margin: 50rem 0 0 0;
     }
     &__tags-item {
-      margin: 0 20rem 0 0;
       padding: 10rem 40rem;
       background-color: #E0DBDE;
       border-radius: 10px;
@@ -83,6 +82,9 @@ export default {
       transition: opacity .3s;
       cursor: pointer;
       transition: background-color .2s, color .2s;
+      &:not(:last-child) {
+        margin: 0 20rem 0 0;
+      }
       &:before {
         content: attr(label);
       }
@@ -90,12 +92,24 @@ export default {
         background-color: #644C5C;
         color: #FFF;
       }
+      @media screen and (max-width: 680px) {
+        display: flex;
+        justify-content: center;
+        width: calc(50% - 10px);
+        padding: 10px 0;
+        &:not(:last-child) {
+          margin: 0 20px 0 0;
+        }
+      }
     }
     &__list {
       margin: 40px 0 0 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 30px;
+      @media screen and (max-width: 1280px) {
+        grid-template-columns: 1fr;
+      }
     }
   }
 </style>

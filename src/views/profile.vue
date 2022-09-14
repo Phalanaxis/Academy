@@ -16,21 +16,30 @@
           <input-profile ref="name" @setProfile="setProfile" title="Имя" :value="profile.name" type="name" />
           <input-profile ref="middlename" @setProfile="setProfile" title="Отчество" :value="profile.middleName" type="middlename" />
           <input-profile ref="phone" @setProfile="setProfile" title="Телефон" :value="profile.phoneNumber" type="phone" />
+          <div class="profile__email">
+            {{ profile .email }}
+          </div>
         </div>
       </ui-card>
     </div>
     <div class="profile__children">
-      <ui-card v-for="(el, index) in profile.children"
-        :key="index"
-        class="profile__child"
-      >
-        <div class="profile__child-title">Ребенок</div>
-        <div class="profile__child-name">{{ el.name }}</div>
-        <div class="profile__child-old">{{ el.old }}</div>
-      </ui-card>
-      <ui-card @click="switchModal" class="profile__child-button">
-        Добавить ребенка
-      </ui-card>
+      <transition-group name="list">
+        <ui-card v-for="(el, index) in profile.children"
+          :key="index"
+          class="profile__child"
+        >
+          <div class="profile__child-title">Ребенок</div>
+          <div class="profile__child-name">{{ el.name }}</div>
+          <div class="profile__child-old">{{ calculateAge(el.age) }}</div>
+          <div
+            class="profile__child-cross"
+            @click="deleteChild(el.id)"
+          />
+        </ui-card>
+        <ui-card key="add-child" @click="switchModal" class="profile__child-button">
+          Добавить ребенка
+        </ui-card>
+      </transition-group>
     </div>
     <modal @outside="switchModal" v-if="isModal">
       <div class="modal__title">Заполните информацию о ребенке</div>
@@ -100,23 +109,55 @@ export default {
       })
     },
     addChild () {
-      this.formChild.input.value ? this.formChild.input.isValid === 'success' : this.formChild.input.isValid === 'error'
-      this.formChild.date.value ? this.formChild.date.isValid === 'success' : this.formChild.date.isValid === 'error'
-      if (this.formChild.input.value && this.formChild.date.value) {
+      this.formChild.input.value ? this.formChild.input.isValid = 'success' : this.formChild.input.isValid = 'error'
+
+      if (!!this.formChild.date.value && this.formChild.date.value <= new Date().getTime()) {
+        this.formChild.date.isValid = 'success'
+      } else {
+        this.formChild.date.isValid = 'error'
+      }
+      
+      if (this.formChild.input.isValid === 'success' && this.formChild.date.isValid === 'success') {
         this.profile.createChild({
           name: this.formChild.input.value,
           age: this.formChild.date.value
+        }).then((result) => {
+          if (result) {
+            this.formChild.input.isValid = null
+            this.formChild.date.isValid = null
+            this.isModal = !this.isModal
+            this.successChild()
+          }
         })
+      }
+    },
+    calculateAge (age) {
+      const currentDate = new Date()
+      const birthDate = new Date(age)
+      const resultingAge = currentDate.getFullYear() - birthDate.getFullYear()
+
+      if ( resultingAge % 10 > 1 && resultingAge % 10 < 5) {
+        return resultingAge + ' года'
+      } else if (resultingAge % 10 === 0 || resultingAge % 10 > 4) {
+        return resultingAge + ' лет'
+      } else {
+        return resultingAge + ' год'
       }
     }
   },
   setup() {
     const message = useMessage()
     const profile = useProfileStore()
+
+    function deleteChild (id) {
+      profile.deleteChild(id)
+    }
     return {
       warningAvatar () { message.warning('Нужно загрузить 1 файл') },
       successAvatar () { message.success('Аватар загружен успешно') },
-      profile
+      successChild () { message.success('Ребенок успешно добавлен' )},
+      profile,
+      deleteChild
     }
   }
 }
@@ -124,15 +165,33 @@ export default {
 
 <style lang="scss" scoped>
 .profile {
-  &__block {
-  }
   &__card {
     background-color: #F5F3EF;
     display: flex;
+    margin: 75rem 0 0 0;
+    @media screen and (max-width: 680px) {
+      margin: 40px 0 0 0;
+      flex-direction: column;
+    }
+  }
+  &__email {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.02ch;
+    color: #6D6D6D;
   }
   &__avatar {
     position: relative;
     margin: 16px 40px 0 20px;
+    @media screen and (max-width: 1280px) {
+      margin: 16px 75px 0 20px;
+    }
+    @media screen and (max-width: 680px) {
+      display: flex;
+      justify-content: center;
+      margin: 35px 0;
+    }
     #avatar {
       display: none;
     }
@@ -146,6 +205,10 @@ export default {
       border-radius: 50%;
       z-index: 2;
       transition: background-color .3s;
+      @media screen and (max-width: 680px) {
+        top: unset;
+        left: unset;
+      }
     }
     &::after {
       position: absolute;
@@ -212,18 +275,34 @@ export default {
     display: flex;
     flex-wrap: wrap;
     margin: 16px 0 0;
+    width: 100%;
+      @media screen and (max-width: 1280px) {
+        flex-direction: column;
+      }
     }
   &__children {
-    margin: 30px 0 0;
+    margin: 30rem 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    grid-gap: 30px;
     gap: 30px;
+    @media screen and (max-width: 1280px) {
+      grid-gap: 20px;
+      gap: 20px;
+    }
   }
   &__child {
+    position: relative;
     height: 124px;
     background-color: #C89C7A50;
     width: calc(33% - 20px);
+    @media screen and (max-width: 1280px) {
+      width: calc(50% - 10px);
+    }
+    @media screen and (max-width: 680px) {
+      width: 100%;
+    }
     &-title {
       font-family: Montserrat;
       font-size: 14px;
@@ -245,7 +324,7 @@ export default {
       font-weight: 500;
       line-height: 19px;
       color: #78353E;
-      margin: 0 0 10px;
+      margin: 10px 0;
     }
     &-button {
       cursor: pointer;
@@ -271,6 +350,42 @@ export default {
         width: 28px;
         height: 28px;
       }
+      @media screen and (max-width: 1280px) {
+        width: calc(50% - 10px);
+      }
+      @media screen and (max-width: 680px) {
+        width: 100%;
+      }
+    }
+    &-cross {
+      position: absolute;
+      top: 15rem;
+      right: 15rem;
+      width: 15rem;
+      height: 15rem;
+      cursor: pointer;
+      content: '';
+      transition: transform .3s;
+      &::after {
+        position: absolute;
+        top: 5rem;
+        left: 0;
+        width: 14rem;
+        height: 2rem;
+        content: '';
+        background-color: #644C5C;
+        transform: rotate(45deg);
+      }
+      &::before {
+        position: absolute;
+        top: 5rem;
+        left: 0;
+        width: 14rem;
+        height: 2rem;
+        content: '';
+        background-color: #644C5C;
+        transform: rotate(-45deg);
+      }
     }
   }
 }
@@ -282,9 +397,21 @@ export default {
     line-height: 30px;
     color: #78353E;
     margin: 0 0 30px;
+    @media screen and (max-width: 1280px) {
+      font-size: 18px;
+    }
+    @media screen and (max-width: 680px) {
+      font-size: 14px;
+    }
   }
   &__input {
     margin: 0 0 20px;
+    @media screen and (max-width: 1280px) {
+      width: 400px;
+    }
+    @media screen and (max-width: 680px) {
+      width: 280px;
+    }
   }
   &__button {
     cursor: pointer;
@@ -295,6 +422,21 @@ export default {
     border-radius: 9em;
     padding: 12px 0;
     margin: 20px 0 0;
+    @media screen and (max-width: 1280px) {
+      width: 400px;
+    }
+    @media screen and (max-width: 680px) {
+      width: 280px;
+    }
   }
+}
+.list-move, .list-enter-active, .list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from, .list-leave-to {
+  opacity: 0;
+}
+.list-leave-active {
+  position: absolute;
 }
 </style>

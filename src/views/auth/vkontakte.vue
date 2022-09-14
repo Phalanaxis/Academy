@@ -1,5 +1,4 @@
 <template>
-  test
 </template>
 
 <script setup>
@@ -11,7 +10,6 @@ const profile = useProfileStore()
 const route = useRoute()
 
 onMounted(() => {
-  console.log(route.query)
   profile.getVkontakteAuth(route.query)
 })
 </script>

@@ -1,23 +1,28 @@
 <template>
   <section class="products">
-    <h2 class="products__title">Продукты</h2>
-    <products-list :list="products.GET_PRODUCTS" />
+    <ui-title>Продукты</ui-title>
+    <tagged-cards-list :list="products.GET_PRODUCTS" mainLink="/products/" />
   </section>
 </template>
 
 <script>
 import { useProductsStore } from '@/stores/products'
-import ProductsList from '@/components/blocks/ProductsList.vue'
+import TaggedCardsList from '@/components/blocks/TaggedCardsList.vue'
+import UiTitle from '@/components/ui/UiTitle.vue'
 export default {
+  components: {
+    TaggedCardsList,
+    UiTitle
+  },
+  provide: {
+    isTagged: true,
+  },
   setup () {
     const products = useProductsStore()
     products.fetchProducts()
     return {
       products
     }
-  },
-  components: {
-    ProductsList
   }
 }
 </script>
@@ -25,17 +30,5 @@ export default {
 <style lang="scss" scoped>
   .products {
     width: 100%;
-    min-height: 100vh;
-    // padding-top: 60px;
-    // padding-bottom: 50px;
-    padding: 60rem 75rem 50rem 30rem;
-    background-color: #FBFAF9;
-    &__title {
-      margin: 0;
-      font-size: 40rem;
-      line-height: 60rem;
-      font-weight: 600;
-      color: #644C5C;
-    }
   }
 </style>

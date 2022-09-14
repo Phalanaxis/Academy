@@ -89,6 +89,12 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    @media screen and (max-width: 1280px) {
+      width: 100%;
+    }
+    @media screen and (max-width: 680px) {
+      margin: 0 0 30px;
+    }
     &_edit {
       .list__title::after {
         background-color: #839389;
@@ -154,7 +160,7 @@ export default {
       letter-spacing: 0.02em;
       color: #000;
       height: 24px;
-      width: 260px;
+      width: 100%;
     }
     &__input {
       font-family: Montserrat;

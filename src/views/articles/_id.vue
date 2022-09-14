@@ -1,21 +1,21 @@
 <template>
-  <div v-if="storeArticles.GET_FOUNDARTICLE.attributes" class="event">
-    <div class="event__data-container">
-      <div class="event__data-box">
-        <div class="event__data-original" v-html="formDate(storeArticles.GET_FOUNDARTICLE.attributes.date)" />
+  <div v-if="storeArticles.GET_FOUNDARTICLE.attributes" class="article">
+    <div class="article__data-container">
+      <div class="article__data-box">
+        <div class="article__data-original" v-html="formDate(storeArticles.GET_FOUNDARTICLE.attributes.date)" />
       </div>
-      <h3 class="event__title" v-html="storeArticles.GET_FOUNDARTICLE.attributes.title" />
-      <img v-if = "storeArticles.GET_FOUNDARTICLE.attributes.image.data" class="event__image" :src="link + storeArticles.GET_FOUNDARTICLE.attributes.image.data.attributes.url" />
-      <div class="event__description" v-html="storeArticles.GET_FOUNDARTICLE.attributes.description" />
-      <div class="event__button-link-container">
-        <spiral-button class="event__button" text="Все статьи" url="/articles" />
+      <h3 class="article__title" v-html="storeArticles.GET_FOUNDARTICLE.attributes.title" />
+      <img v-if = "storeArticles.GET_FOUNDARTICLE.attributes.image.data" class="article__image" :src="link + storeArticles.GET_FOUNDARTICLE.attributes.image.data.attributes.url" />
+      <div class="article__description" v-html="storeArticles.GET_FOUNDARTICLE.attributes.description" />
+      <div class="article__button-link-container">
+        <spiral-button class="article__button" text="Все статьи" url="/articles" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useArticlesStore } from '@/stores/articles'
 import SpiralButton from '@/components/ui/SpiralButton.vue'
@@ -48,11 +48,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .event {
+  .article {
     width: 100%;
     min-height: 100vh;
-    background-color: #FBFAF9;
     padding: 90rem 20% 140rem 110rem;
+    @media screen and (max-width: 1280px) {
+      padding: 50px 60px 100px 60px;
+    }
+    @media screen and (max-width: 680px) {
+      padding: 40px 25px 100px 25px;
+    }
     &__data-box {
       display: flex;
       font-size: 14rem;
@@ -75,6 +80,12 @@ export default {
       max-height: 360rem;
       object-fit: cover;
       border-radius: 15px;
+      @media screen and (max-width: 1280px) {
+        height: 300px;
+      }
+      @media screen and (max-width: 680px) {
+        height: 200px;
+      }
     }
     &__description {
       margin: 40rem 0 0 0;

@@ -57,6 +57,13 @@ import { ruRU,	dateRuRU } from 'naive-ui'
           "iconColorSuccess": "#644C5C",
           "iconColorError": "rgb(119, 52, 61)",
           "iconColorWarning": "rgb(197, 177, 178)"
+        },
+        "Collapse": {
+          "titleTextColor": "#77343D",
+          "textColor": "#77343D",
+          "titleFontSize": "20px",
+          "titleFontWeight": "600",
+          "fontSize": "16px"
         }
       }
       return {
